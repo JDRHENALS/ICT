@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selección y Priorización de Líneas de Investigación - Ing. Mecánica</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js y SheetJS para análisis y exportación -->
+  <script src="lib/chart.umd.js"></script>
+  <script>
+    if (!window.Chart) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>');
+    }
+  </script>
+  <script src="lib/xlsx.full.min.js"></script>
+  <script>
+    if (!window.XLSX) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Banner Institucional -->
+  <header class="header-banner">
+    <div class="header-container">
+      <div class="header-badge">Universidad de Córdoba &bull; Fac. de Ingenierías</div>
+      <h1 class="header-title">Instrumento de Selección y Priorización de Líneas de Investigación</h1>
+      <p class="header-subtitle">
+        Departamento de Ingeniería Mecánica &bull; Herramienta interactiva para recepción, evaluación multicriterio y toma de decisiones estratégicas de investigación.
+      </p>
+    </div>
+  </header>
+
+  <!-- Pestañas de Navegación -->
+  <nav class="nav-tabs-wrapper">
+    <div class="nav-tabs-container">
+      <button class="tab-btn active" onclick="switchTab('formulario')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        1. Formulario de Evaluación (Docentes)
+      </button>
+      <button class="tab-btn" onclick="switchTab('dashboard')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        2. Tablero de Análisis y Priorización
+        <span class="badge-count" id="badge-total-respuestas">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('datos')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        3. Gestión de Datos y Exportación
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: FORMULARIO DE EVALUACIÓN (DOCENTES) -->
+    <!-- ========================================== -->
+    <section id="tab-formulario" class="tab-panel active">
+      <form id="evaluationForm" onsubmit="handleFormSubmit(event)">
+        
+        <!-- Bloque 1: Datos del Docente e Identificación -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Identificación del Docente / Investigador
+              </h2>
+              <p class="card-subtitle">Datos generales del evaluador y área de conocimiento</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: span 1;">
+              <label class="form-label" for="docenteNombre">Nombre Completo del Docente / Investigador *</label>
+              <input type="text" id="docenteNombre" class="form-input" placeholder="Ej: Dr. Juan Pérez" required>
+            </div>
+
+            <div class="form-group" style="grid-column: span 1;">
+              <label class="form-label" for="subareaSelect">Subárea de Enfoque *</label>
+              <select id="subareaSelect" class="form-select" onchange="toggleSubareaOtro()" required>
+                <option value="">-- Seleccione una subárea --</option>
+                <option value="Materiales y Manufactura">Materiales y Manufactura</option>
+                <option value="Termofluidos y Energía">Termofluidos y Energía</option>
+                <option value="Diseño y Mecatrónica">Diseño y Mecatrónica</option>
+                <option value="Otra">Otra (especificar)</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="subareaOtroGroup" style="display: none; grid-column: span 2;">
+              <label class="form-label" for="subareaOtro">Especifique la Subárea de Enfoque</label>
+              <input type="text" id="subareaOtro" class="form-input" placeholder="Indique la otra área de enfoque">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 2: Propuesta de Línea -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                Línea de Investigación Propuesta
+              </h2>
+              <p class="card-subtitle">Nombre y descripción sintética de la propuesta</p>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="nombreLinea">Nombre de la Línea Propuesta *</label>
+            <input type="text" id="nombreLinea" class="form-input" placeholder="Ej: Conversión Térmica y Eficiencia Energética en Agroindustria" required>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">
+              <span>Definición Breve (máximo 50 palabras) *</span>
+              <span id="wordCounter" class="word-count-badge word-count-ok">0 / 50 palabras</span>
+            </div>
+            <textarea id="definicionLinea" class="form-textarea" placeholder="Describa el alcance fundamental, tecnologías y propósito de la línea propuesta..." oninput="updateWordCount()" required></textarea>
+            <span id="wordCountAlert" style="font-size: 0.8rem; color: var(--danger); display: none; margin-top: 0.2rem;">
+              ⚠️ Ha superado el límite recomendado de 50 palabras.
+            </span>
+          </div>
+        </div>
+
+        <!-- Bloque 3: Criterios de Evaluación Cuantitativa (Ponderaciones) -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                Matriz de Evaluación Cuantitativa Ponderada
+              </h2>
+              <p class="card-subtitle">Califique cada criterio en escala de 1 a 5 (1 = Muy bajo / Deficiente, 5 = Muy alto / Excelente)</p>
+            </div>
+          </div>
+
+          <!-- Criterio 1: Pertinencia -->
+          <div class="criterion-card" id="card-criterio-1">
+            <div class="criterion-header">
+              <span class="criterion-title">1. Pertinencia Territorial e Industrial</span>
+              <span class="weight-badge">Ponderación: 25%</span>
+            </div>
+            <p class="criterion-desc">
+              Alineamiento con apuestas productivas regionales (ODS, MGA, prioridades de Minciencias y sector productivo del Caribe y Colombia).
+            </p>
+            <div class="rating-scale-group" data-criterion="pertinencia">
+              <button type="button" class="rating-btn" onclick="setRating('pertinencia', 1)"><span class="rating-num">1</span><span class="rating-label">Muy Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('pertinencia', 2)"><span class="rating-num">2</span><span class="rating-label">Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('pertinencia', 3)"><span class="rating-num">3</span><span class="rating-label">Medio</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('pertinencia', 4)"><span class="rating-num">4</span><span class="rating-label">Alto</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('pertinencia', 5)"><span class="rating-num">5</span><span class="rating-label">Muy Alto</span></button>
+            </div>
+          </div>
+
+          <!-- Criterio 2: Capacidad Instalada -->
+          <div class="criterion-card" id="card-criterio-2">
+            <div class="criterion-header">
+              <span class="criterion-title">2. Capacidad Instalada e Infraestructura</span>
+              <span class="weight-badge">Ponderación: 20%</span>
+            </div>
+            <p class="criterion-desc">
+              Disponibilidad de laboratorios, equipos, software especializado y talento humano calificado dentro del departamento.
+            </p>
+            <div class="rating-scale-group" data-criterion="infraestructura">
+              <button type="button" class="rating-btn" onclick="setRating('infraestructura', 1)"><span class="rating-num">1</span><span class="rating-label">Muy Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('infraestructura', 2)"><span class="rating-num">2</span><span class="rating-label">Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('infraestructura', 3)"><span class="rating-num">3</span><span class="rating-label">Medio</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('infraestructura', 4)"><span class="rating-num">4</span><span class="rating-label">Alto</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('infraestructura', 5)"><span class="rating-num">5</span><span class="rating-label">Muy Alto</span></button>
+            </div>
+          </div>
+
+          <!-- Criterio 3: Productividad -->
+          <div class="criterion-card" id="card-criterio-3">
+            <div class="criterion-header">
+              <span class="criterion-title">3. Productividad Académica y Transferencia</span>
+              <span class="weight-badge">Ponderación: 20%</span>
+            </div>
+            <p class="criterion-desc">
+              Potencial de publicación en revistas indexadas (Scopus / WoS), patentes, prototipos de base tecnológica o diseño de productos.
+            </p>
+            <div class="rating-scale-group" data-criterion="productividad">
+              <button type="button" class="rating-btn" onclick="setRating('productividad', 1)"><span class="rating-num">1</span><span class="rating-label">Muy Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('productividad', 2)"><span class="rating-num">2</span><span class="rating-label">Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('productividad', 3)"><span class="rating-num">3</span><span class="rating-label">Medio</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('productividad', 4)"><span class="rating-num">4</span><span class="rating-label">Alto</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('productividad', 5)"><span class="rating-num">5</span><span class="rating-label">Muy Alto</span></button>
+            </div>
+          </div>
+
+          <!-- Criterio 4: Capacidad de Formación -->
+          <div class="criterion-card" id="card-criterio-4">
+            <div class="criterion-header">
+              <span class="criterion-title">4. Capacidad de Formación</span>
+              <span class="weight-badge">Ponderación: 20%</span>
+            </div>
+            <p class="criterion-desc">
+              Oportunidad y articulación para vinculación activa de estudiantes de pregrado (semilleros), maestría y doctorado.
+            </p>
+            <div class="rating-scale-group" data-criterion="formacion">
+              <button type="button" class="rating-btn" onclick="setRating('formacion', 1)"><span class="rating-num">1</span><span class="rating-label">Muy Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('formacion', 2)"><span class="rating-num">2</span><span class="rating-label">Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('formacion', 3)"><span class="rating-num">3</span><span class="rating-label">Medio</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('formacion', 4)"><span class="rating-num">4</span><span class="rating-label">Alto</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('formacion', 5)"><span class="rating-num">5</span><span class="rating-label">Muy Alto</span></button>
+            </div>
+          </div>
+
+          <!-- Criterio 5: Sostenibilidad Financiera -->
+          <div class="criterion-card" id="card-criterio-5">
+            <div class="criterion-header">
+              <span class="criterion-title">5. Sostenibilidad Financiera</span>
+              <span class="weight-badge">Ponderación: 15%</span>
+            </div>
+            <p class="criterion-desc">
+              Viabilidad para captar fondos externos (convocatorias nacionales/internacionales, consultoría especializada, regalías SGR).
+            </p>
+            <div class="rating-scale-group" data-criterion="sostenibilidad">
+              <button type="button" class="rating-btn" onclick="setRating('sostenibilidad', 1)"><span class="rating-num">1</span><span class="rating-label">Muy Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('sostenibilidad', 2)"><span class="rating-num">2</span><span class="rating-label">Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('sostenibilidad', 3)"><span class="rating-num">3</span><span class="rating-label">Medio</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('sostenibilidad', 4)"><span class="rating-num">4</span><span class="rating-label">Alto</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('sostenibilidad', 5)"><span class="rating-num">5</span><span class="rating-label">Muy Alto</span></button>
+            </div>
+          </div>
+
+          <!-- Resumen de Puntaje en Vivo -->
+          <div class="score-summary-box" id="scoreSummaryBox">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: #475569; text-transform: uppercase;">Puntaje Ponderado Total (Escala 1.0 - 5.0)</div>
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.2rem;" id="scoreFormulaDesc">
+                Fórmula: (C1 × 25%) + (C2 × 20%) + (C3 × 20%) + (C4 × 20%) + (C5 × 15%)
+              </div>
+            </div>
+            <div style="text-align: right; display: flex; align-items: center; gap: 1rem;">
+              <div>
+                <span class="score-value-big" id="calculatedTotalScore">0.00</span>
+                <span style="font-size: 1.1rem; color: #64748b;"> / 5.0</span>
+              </div>
+              <div class="priority-badge-big priority-media" id="calculatedPriorityBadge">Sin calificar</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 4: Cuestionario Cualitativo Complementario -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                Cuestionario Cualitativo Complementario
+              </h2>
+              <p class="card-subtitle">Sinergias de consolidación y necesidades de recursos críticos</p>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="accionConsolidacion">
+              Acción de Consolidación
+            </label>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+              En caso de superposición con líneas existentes, ¿con qué otra línea sugiere fusionar esta propuesta?
+            </p>
+            <input type="text" id="accionConsolidacion" class="form-input" placeholder="Ej: Sugiero articular o fusionar con la línea de Conversión Térmica de Biomasa...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              Infraestructura Crítica (Equipamiento o Software)
+            </label>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.6rem;">
+              Indique los 2 equipamientos o software clave que requeriría esta línea para ser competitiva a nivel nacional en los próximos 3 años:
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label class="form-label" style="font-size: 0.8rem; color: #64748b;" for="infraItem1">1. Requerimiento Clave #1 *</label>
+                <input type="text" id="infraItem1" class="form-input" placeholder="Ej: Analizador de gases de combustión / Software ANSYS" required>
+              </div>
+              <div>
+                <label class="form-label" style="font-size: 0.8rem; color: #64748b;" for="infraItem2">2. Requerimiento Clave #2</label>
+                <input type="text" id="infraItem2" class="form-input" placeholder="Ej: Cámara termográfica de alta resolución">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.25rem;">
+            <label class="form-label" for="comentariosAdicionales">
+              Comentarios Adicionales y Argumentación de la Evaluación
+            </label>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+              Espacio para justificar, argumentar o ampliar las razones de las calificaciones asignadas a los criterios de evaluación:
+            </p>
+            <textarea id="comentariosAdicionales" class="form-textarea" placeholder="Describa aquí los argumentos, justificaciones o consideraciones especiales que sustentan su calificación..."></textarea>
+          </div>
+
+          <!-- Acciones del Formulario -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="resetEvaluationForm()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>
+              Limpiar
+            </button>
+            <button type="submit" class="btn btn-primary" id="btnEnviarPrincipal" style="padding: 0.75rem 2rem; font-size: 1rem; background: #1e3a8a; color: white;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              Enviar
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: TABLERO DE ANÁLISIS Y PRIORIZACIÓN   -->
+    <!-- ========================================== -->
+    <section id="tab-dashboard" class="tab-panel">
+
+      <!-- Barra Superior de Acciones de Análisis -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-dark);">Tablero de Priorización Departamental</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Consolidación multicriterio de las propuestas registradas por el cuerpo docente</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" class="no-print">
+          <button class="btn btn-primary" onclick="exportExcelFull()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Exportar a Excel (.xlsx)
+          </button>
+          <button class="btn btn-outline" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Imprimir Informe / PDF
+          </button>
+          <button class="btn btn-outline" onclick="loadResponsesFromStorage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Métricas Clave (KPIs) -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background: #e0f2fe; color: #0369a1;">📋</div>
+          <div>
+            <div class="kpi-val" id="kpiTotalLineas">0</div>
+            <div class="kpi-label">Líneas Evaluadas</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background: #dcfce7; color: #15803d;">👨‍🏫</div>
+          <div>
+            <div class="kpi-val" id="kpiTotalDocentes">0</div>
+            <div class="kpi-label">Docentes Participantes</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background: #fef3c7; color: #b45309;">⭐</div>
+          <div>
+            <div class="kpi-val" id="kpiPromedioPuntaje">0.00</div>
+            <div class="kpi-label">Puntaje Ponderado Promedio</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background: #f3e8ff; color: #7e22ce;">🏆</div>
+          <div>
+            <div class="kpi-val" id="kpiMejorPuntaje" style="font-size: 1.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">-</div>
+            <div class="kpi-label">Línea Mayor Prioridad</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros -->
+      <div class="filter-bar no-print">
+        <div class="filter-item">
+          <span>🔍 Buscar:</span>
+          <input type="text" id="filterSearch" class="form-input" style="width: 220px; padding: 0.4rem 0.6rem;" placeholder="Línea, docente o palabra..." oninput="renderTableAndCharts()">
+        </div>
+
+        <div class="filter-item">
+          <span>Subárea:</span>
+          <select id="filterSubarea" class="form-select" style="width: 200px; padding: 0.4rem 0.6rem;" onchange="renderTableAndCharts()">
+            <option value="ALL">Todas las subáreas</option>
+            <option value="Materiales y Manufactura">Materiales y Manufactura</option>
+            <option value="Termofluidos y Energía">Termofluidos y Energía</option>
+            <option value="Diseño y Mecatrónica">Diseño y Mecatrónica</option>
+            <option value="Otra">Otras subáreas</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <span>Prioridad:</span>
+          <select id="filterPrioridad" class="form-select" style="width: 160px; padding: 0.4rem 0.6rem;" onchange="renderTableAndCharts()">
+            <option value="ALL">Todas las prioridades</option>
+            <option value="Alta">Alta (≥ 4.0)</option>
+            <option value="Media">Media (3.0 - 3.9)</option>
+            <option value="Baja">Baja (< 3.0)</option>
+          </select>
+        </div>
+
+        <div class="filter-item" style="margin-left: auto;">
+          <button class="btn btn-outline btn-sm" onclick="clearFilters()">Restablecer filtros</button>
+        </div>
+      </div>
+
+      <!-- Tabla de Ranking y Priorización -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Matriz de Priorización de Líneas de Investigación</h3>
+            <p class="card-subtitle">Ordenado jerárquicamente por Puntaje Ponderado Total (Haga clic en encabezados para ordenar)</p>
+          </div>
+          <span style="font-size: 0.82rem; color: #64748b;" id="tableCountBadge">Mostrando 0 propuestas</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="tablePriorizacion">
+            <thead>
+              <tr>
+                <th style="width: 50px; text-align: center;">#</th>
+                <th>Línea de Investigación Propuesta</th>
+                <th>Docente / Proponente</th>
+                <th>Subárea</th>
+                <th style="text-align: center;" title="Pertinencia Territorial e Industrial (25%)">Pert. (25%)</th>
+                <th style="text-align: center;" title="Capacidad Instalada e Infraestructura (20%)">Infra. (20%)</th>
+                <th style="text-align: center;" title="Productividad Académica y Transferencia (20%)">Prod. (20%)</th>
+                <th style="text-align: center;" title="Capacidad de Formación (20%)">Form. (20%)</th>
+                <th style="text-align: center;" title="Sostenibilidad Financiera (15%)">Sost. (15%)</th>
+                <th style="text-align: center; background: #e2e8f0;">TOTAL</th>
+                <th style="text-align: center;">Prioridad</th>
+                <th style="text-align: center;" class="no-print">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyPriorizacion">
+              <!-- Renderizado dinámico vía JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Visualizaciones Gráficas -->
+      <div class="charts-grid">
+        <!-- Gráfico Radar Multicriterio -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Perfil Multicriterio Comparativo (Radar)</h3>
+              <p class="card-subtitle">Comparación de desempeño de las 3 líneas con mayor puntaje</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="radarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico de Barras por Subárea -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Puntaje Ponderado Promedio por Subárea</h3>
+              <p class="card-subtitle">Evaluación agregada por área temática del departamento</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="barSubareaChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Módulo de Análisis Cualitativo -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Análisis Cualitativo Consolidado</h3>
+            <p class="card-subtitle">Consolidaciones sugeridas y matriz de infraestructura/software demandado</p>
+          </div>
+        </div>
+
+        <div class="qualitative-grid">
+          <!-- Columna 1: Fusiones y Sinergias -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: #1e3a8a; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+              🔄 Acciones de Consolidación y Fusiones Sugeridas
+            </h4>
+            <div class="item-list-container" id="listConsolidaciones">
+              <!-- Renderizado dinámico -->
+            </div>
+          </div>
+
+          <!-- Columna 2: Infraestructura y Software Crítico -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: #0d9488; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+              🛠️ Requerimientos de Equipamiento y Software (3 Años)
+            </h4>
+            <div class="item-list-container" id="listInfraestructura">
+              <!-- Renderizado dinámico -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: GESTIÓN DE DATOS Y EXPORTACIÓN      -->
+    <!-- ========================================== -->
+    <section id="tab-datos" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Administración y Respaldo de Respuestas</h2>
+            <p class="card-subtitle">Importe respuestas de otros docentes, descargue respaldos o restaure los datos de prueba</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+          
+          <!-- Bloque Sincronización con Google Sheets -->
+          <div style="border: 1px solid #86efac; background: #f0fdf4; border-radius: var(--radius-sm); padding: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 1.4rem;">☁️</span>
+              <h4 style="font-size: 1rem; font-weight: 700; color: #166534;">Sincronización en Vivo (Google Sheets)</h4>
+            </div>
+            <p style="font-size: 0.82rem; color: #15803d; margin-bottom: 0.75rem;">
+              Conecte su hoja de cálculo en la nube para descargar automáticamente en 1 clic las respuestas que los docentes envíen desde el enlace web.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <input type="text" id="cloudSyncUrl" class="form-input" value="https://script.google.com/macros/s/AKfycbwKb0LEM8T0sVUY5fCca1uXb2kDgTRaMkA7b_ChK_lKQnXCyALZRMTclYAMmX1IqUrETg/exec" placeholder="Pegue la URL de su Google Apps Script (/exec)" style="font-size: 0.85rem;">
+              <button class="btn btn-success" onclick="syncWithGoogleSheets()">
+                🔄 Sincronizar Respuestas de la Nube
+              </button>
+            </div>
+          </div>
+
+          <!-- Bloque Importar Respuestas -->
+          <div style="border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 1.5rem; text-align: center;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary); margin-bottom: 0.75rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem;">Cargar Archivo de Respuestas (.JSON)</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Seleccione un archivo JSON de un docente o una consolidación externa para anexarla a la base de datos local.
+            </p>
+            <input type="file" id="jsonFileInput" accept=".json" style="display: none;" onchange="handleImportJsonFile(event)">
+            <button class="btn btn-outline" onclick="document.getElementById('jsonFileInput').click()">
+              Seleccionar Archivo JSON
+            </button>
+          </div>
+
+          <!-- Bloque Descargas / Exportaciones -->
+          <div style="border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.5rem;">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Descargar Base de Datos</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Exporte toda la información consolidada en los formatos estándar para análisis en Excel o respaldo digital.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <button class="btn btn-success" onclick="exportExcelFull()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Descargar Archivo Excel Consolidado (.xlsx)
+              </button>
+              <button class="btn btn-outline" onclick="exportAllJsonBackup()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Descargar Base Completa en Formato JSON
+              </button>
+            </div>
+          </div>
+
+          <!-- Bloque Mantenimiento -->
+          <div style="border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.5rem; background: #fffaf0;">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: #9a3412;">Mantenimiento de la Base</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Restaure los ejemplos representativos de Ingeniería Mecánica o vacíe todos los registros para iniciar un proceso formal en limpio.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <button class="btn btn-outline" onclick="restoreSampleData()">
+                🔄 Restaurar Datos de Ejemplo de Ingeniería Mecánica
+              </button>
+              <button class="btn btn-danger" onclick="clearAllData()">
+                🗑️ Vaciar Todas las Respuestas (Iniciar en Blanco)
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal para ver detalle completo de una propuesta -->
+  <div id="detailModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 1rem;">
+    <div style="background: white; border-radius: var(--radius); max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; box-shadow: var(--shadow-lg);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+        <div>
+          <h3 id="modalTituloLinea" style="font-size: 1.25rem; font-weight: 800; color: var(--primary-dark);"></h3>
+          <p id="modalDocenteSubarea" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="closeModal()">✕ Cerrar</button>
+      </div>
+      <div id="modalBody" style="display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem;">
+        <!-- Inyectado por JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor de notificaciones Toast -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Lógica de la Aplicación -->
+  <script src="app.js"></script>
+</body>
+</html>

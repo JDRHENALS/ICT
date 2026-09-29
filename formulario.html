@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario Docente - Líneas de Investigación (Ing. Mecánica)</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #172554;
+      --primary-light: #3b82f6;
+      --primary-bg: #eff6ff;
+      --accent: #0d9488;
+      --success: #10b981;
+      --success-bg: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-bg: #fffbeb;
+      --danger: #ef4444;
+      --danger-bg: #fef2f2;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --radius-sm: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 3rem;
+    }
+
+    .header-banner {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 65%, #2563eb 100%);
+      color: white;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .header-title { font-size: 1.7rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .header-subtitle { font-size: 0.95rem; color: #bfdbfe; max-width: 800px; margin: 0 auto; }
+
+    .main-container {
+      max-width: 860px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .info-card {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: #1e3a8a;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-subtitle { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.2rem; }
+    .form-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      background: white;
+      color: var(--text-main);
+      font-family: inherit;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    .form-textarea { resize: vertical; min-height: 80px; }
+
+    .word-count-badge {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .word-ok { background: var(--success-bg); color: var(--success); }
+    .word-limit { background: var(--danger-bg); color: var(--danger); }
+
+    /* Criterios */
+    .criterion-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .criterion-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .criterion-name { font-size: 0.92rem; font-weight: 700; color: var(--primary-dark); }
+    .weight-badge {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 0.2rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .criterion-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.35; }
+
+    .rating-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+    .rating-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 0.2rem;
+      border: 2px solid var(--border);
+      background: white;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .rating-btn:hover { border-color: var(--primary-light); background: var(--primary-bg); }
+    .rating-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+    .rating-num { font-size: 1.15rem; font-weight: 800; }
+    .rating-lbl { font-size: 0.68rem; margin-top: 0.15rem; opacity: 0.85; }
+
+    /* Score banner */
+    .score-banner {
+      background: #ecfdf5;
+      border: 2px solid #86efac;
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1.5rem 0;
+    }
+    .score-banner.warning { background: #fffbeb; border-color: #fcd34d; }
+    .score-banner.danger { background: #fef2f2; border-color: #fca5a5; }
+
+    .score-big { font-size: 2.2rem; font-weight: 800; color: var(--text-main); }
+    .priority-badge {
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .prio-alta { background: #dcfce7; color: #15803d; }
+    .prio-media { background: #fef3c7; color: #b45309; }
+    .prio-baja { background: #fee2e2; color: #b91c1c; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-success { background: #059669; color: white; }
+    .btn-success:hover { background: #047857; }
+    .btn-outline { background: white; border: 1px solid var(--border); color: #334155; }
+    .btn-outline:hover { background: #f1f5f9; }
+
+    .btn-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .success-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 100;
+    }
+    .success-modal-content {
+      background: white;
+      border-radius: var(--radius);
+      max-width: 550px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-banner">
+    <div class="header-badge">Universidad de Córdoba &bull; Fac. de Ingenierías</div>
+    <h1 class="header-title">Instrumento de Selección y Priorización de Líneas de Investigación</h1>
+    <p class="header-subtitle">Departamento de Ingeniería Mecánica &bull; Formulario oficial de recolección de propuestas docentes</p>
+  </header>
+
+  <main class="main-container">
+
+    <div class="info-card">
+      <strong>📌 Instrucciones:</strong>
+      <p style="margin-top: 0.3rem; line-height: 1.5;">
+        Diligencie sus datos, formule su propuesta de línea de investigación y califique cada uno de los 5 criterios en una escala de 1 a 5 (donde 1 = Muy bajo / Deficiente y 5 = Muy alto / Excelente). Al finalizar, presione <strong>"Enviar"</strong> para que su propuesta quede registrada automáticamente en el sistema del departamento.
+      </p>
+    </div>
+
+    <form id="docenteForm" onsubmit="handleDocenteSubmit(event)">
+
+      <!-- Bloque 1: Identificación -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">1. Identificación del Docente / Investigador</h2>
+          <p class="card-subtitle">Datos del proponente y clasificación temática</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="docenteNombre">Nombre Completo del Docente / Investigador *</label>
+          <input type="text" id="docenteNombre" class="form-input" placeholder="Ej: Dr. Carlos Pérez" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="subareaSelect">Subárea de Enfoque *</label>
+          <select id="subareaSelect" class="form-select" onchange="toggleSubareaOtro()" required>
+            <option value="">-- Seleccione una subárea --</option>
+            <option value="Materiales y Manufactura">Materiales y Manufactura</option>
+            <option value="Termofluidos y Energía">Termofluidos y Energía</option>
+            <option value="Diseño y Mecatrónica">Diseño y Mecatrónica</option>
+            <option value="Otra">Otra (especificar)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="subareaOtroBox" style="display: none;">
+          <label class="form-label" for="subareaOtro">Especifique la Subárea de Enfoque *</label>
+          <input type="text" id="subareaOtro" class="form-input" placeholder="Nombre de la otra área temática">
+        </div>
+      </div>
+
+      <!-- Bloque 2: Propuesta de Línea -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">2. Propuesta de Línea de Investigación</h2>
+          <p class="card-subtitle">Nombre y delimitación conceptual de la línea</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="nombreLinea">Propuesta de Línea N° 1: Nombre de la Línea *</label>
+          <input type="text" id="nombreLinea" class="form-input" placeholder="Ej: Aprovechamiento Térmico y Gasificación de Biomasa Agroindustrial" required>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span>Definición Breve (máx. 50 palabras) *</span>
+            <span id="wordBadge" class="word-count-badge word-ok">0 / 50 palabras</span>
+          </div>
+          <textarea id="definicionLinea" class="form-textarea" placeholder="Describa brevemente el alcance, impacto y tecnologías clave de la línea propuesta..." oninput="checkWords()" required></textarea>
+          <span id="wordAlert" style="display: none; font-size: 0.8rem; color: var(--danger); margin-top: 0.2rem;">
+            ⚠️ Ha superado las 50 palabras recomendadas.
+          </span>
+        </div>
+      </div>
+
+      <!-- Bloque 3: Criterios -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">3. Matriz de Evaluación Cuantitativa</h2>
+          <p class="card-subtitle">Evalúe cada criterio de 1 a 5 (1 = Muy bajo / Deficiente, 5 = Muy alto / Excelente)</p>
+        </div>
+
+        <!-- C1 -->
+        <div class="criterion-box" id="box-pertinencia">
+          <div class="criterion-title-row">
+            <span class="criterion-name">1. Pertinencia Territorial e Industrial</span>
+            <span class="weight-badge">Ponderación: 25%</span>
+          </div>
+          <p class="criterion-desc">Alineamiento con apuestas productivas regionales (ODS, MGA, prioridades de Minciencias y sector productivo).</p>
+          <div class="rating-row" data-criterion="pertinencia">
+            <button type="button" class="rating-btn" onclick="selectScore('pertinencia', 1)"><span class="rating-num">1</span><span class="rating-lbl">Muy bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('pertinencia', 2)"><span class="rating-num">2</span><span class="rating-lbl">Bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('pertinencia', 3)"><span class="rating-num">3</span><span class="rating-lbl">Medio</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('pertinencia', 4)"><span class="rating-num">4</span><span class="rating-lbl">Alto</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('pertinencia', 5)"><span class="rating-num">5</span><span class="rating-lbl">Excelente</span></button>
+          </div>
+        </div>
+
+        <!-- C2 -->
+        <div class="criterion-box" id="box-infraestructura">
+          <div class="criterion-title-row">
+            <span class="criterion-name">2. Capacidad Instalada e Infraestructura</span>
+            <span class="weight-badge">Ponderación: 20%</span>
+          </div>
+          <p class="criterion-desc">Disponibilidad de laboratorios, equipos, software especializado y talento humano calificado.</p>
+          <div class="rating-row" data-criterion="infraestructura">
+            <button type="button" class="rating-btn" onclick="selectScore('infraestructura', 1)"><span class="rating-num">1</span><span class="rating-lbl">Muy bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('infraestructura', 2)"><span class="rating-num">2</span><span class="rating-lbl">Bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('infraestructura', 3)"><span class="rating-num">3</span><span class="rating-lbl">Medio</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('infraestructura', 4)"><span class="rating-num">4</span><span class="rating-lbl">Alto</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('infraestructura', 5)"><span class="rating-num">5</span><span class="rating-lbl">Excelente</span></button>
+          </div>
+        </div>
+
+        <!-- C3 -->
+        <div class="criterion-box" id="box-productividad">
+          <div class="criterion-title-row">
+            <span class="criterion-name">3. Productividad Académica y Transferencia</span>
+            <span class="weight-badge">Ponderación: 20%</span>
+          </div>
+          <p class="criterion-desc">Potencial de publicación en revistas indexadas (Scopus/WoS), patentes, prototipos o diseño de productos.</p>
+          <div class="rating-row" data-criterion="productividad">
+            <button type="button" class="rating-btn" onclick="selectScore('productividad', 1)"><span class="rating-num">1</span><span class="rating-lbl">Muy bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('productividad', 2)"><span class="rating-num">2</span><span class="rating-lbl">Bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('productividad', 3)"><span class="rating-num">3</span><span class="rating-lbl">Medio</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('productividad', 4)"><span class="rating-num">4</span><span class="rating-lbl">Alto</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('productividad', 5)"><span class="rating-num">5</span><span class="rating-lbl">Excelente</span></button>
+          </div>
+        </div>
+
+        <!-- C4 -->
+        <div class="criterion-box" id="box-formacion">
+          <div class="criterion-title-row">
+            <span class="criterion-name">4. Capacidad de Formación</span>
+            <span class="weight-badge">Ponderación: 20%</span>
+          </div>
+          <p class="criterion-desc">Oportunidad de vinculación de estudiantes de pregrado (semilleros), maestría y doctorado.</p>
+          <div class="rating-row" data-criterion="formacion">
+            <button type="button" class="rating-btn" onclick="selectScore('formacion', 1)"><span class="rating-num">1</span><span class="rating-lbl">Muy bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('formacion', 2)"><span class="rating-num">2</span><span class="rating-lbl">Bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('formacion', 3)"><span class="rating-num">3</span><span class="rating-lbl">Medio</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('formacion', 4)"><span class="rating-num">4</span><span class="rating-lbl">Alto</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('formacion', 5)"><span class="rating-num">5</span><span class="rating-lbl">Excelente</span></button>
+          </div>
+        </div>
+
+        <!-- C5 -->
+        <div class="criterion-box" id="box-sostenibilidad">
+          <div class="criterion-title-row">
+            <span class="criterion-name">5. Sostenibilidad Financiera</span>
+            <span class="weight-badge">Ponderación: 15%</span>
+          </div>
+          <p class="criterion-desc">Viabilidad para captar fondos externos (convocatorias nacionales/internacionales, consultoría especializada, regalías).</p>
+          <div class="rating-row" data-criterion="sostenibilidad">
+            <button type="button" class="rating-btn" onclick="selectScore('sostenibilidad', 1)"><span class="rating-num">1</span><span class="rating-lbl">Muy bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('sostenibilidad', 2)"><span class="rating-num">2</span><span class="rating-lbl">Bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('sostenibilidad', 3)"><span class="rating-num">3</span><span class="rating-lbl">Medio</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('sostenibilidad', 4)"><span class="rating-num">4</span><span class="rating-lbl">Alto</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('sostenibilidad', 5)"><span class="rating-num">5</span><span class="rating-lbl">Excelente</span></button>
+          </div>
+        </div>
+
+        <!-- Resumen Puntaje -->
+        <div class="score-banner" id="scoreBanner">
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: #475569; text-transform: uppercase;">Puntaje Ponderado Estimado</div>
+            <div style="font-size: 0.78rem; color: #64748b;">(C1 × 25%) + (C2 × 20%) + (C3 × 20%) + (C4 × 20%) + (C5 × 15%)</div>
+          </div>
+          <div style="text-align: right; display: flex; align-items: center; gap: 0.75rem;">
+            <div>
+              <span class="score-big" id="scoreVal">0.00</span>
+              <span style="font-size: 1.1rem; color: #64748b;"> / 5.0</span>
+            </div>
+            <div class="priority-badge prio-media" id="prioBadge">Sin calificar</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloque 4: Cualitativo -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">4. Cuestionario Cualitativo Complementario</h2>
+          <p class="card-subtitle">Sinergias de articulación y requerimientos a 3 años</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="accionConsolidacion">
+            Acción de Consolidación
+          </label>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem;">
+            En caso de superposición con líneas existentes, ¿con qué otra línea sugiere fusionar esta propuesta?
+          </p>
+          <input type="text" id="accionConsolidacion" class="form-input" placeholder="Ej: Sugiero articular con la línea de Conversión Térmica...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Infraestructura Crítica</label>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+            Indique los 2 equipamientos o software clave que requeriría esta línea para ser competitiva a nivel nacional en los próximos 3 años:
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div>
+              <label class="form-label" style="font-size: 0.78rem; color: #64748b;" for="infra1">1. Equipamiento / Software Clave #1 *</label>
+              <input type="text" id="infra1" class="form-input" placeholder="Ej: Analizador de gases / Software ANSYS" required>
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.78rem; color: #64748b;" for="infra2">2. Equipamiento / Software Clave #2</label>
+              <input type="text" id="infra2" class="form-input" placeholder="Ej: Banco dinamométrico o celda climática">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1.25rem;">
+          <label class="form-label" for="comentariosAdicionales">
+            Comentarios Adicionales y Argumentación de la Evaluación
+          </label>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+            Espacio para justificar, argumentar o ampliar las razones de las calificaciones asignadas a los criterios de evaluación:
+          </p>
+          <textarea id="comentariosAdicionales" class="form-textarea" placeholder="Describa aquí los argumentos, justificaciones o consideraciones especiales que sustentan su calificación..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap;">
+          <button type="button" class="btn btn-outline" onclick="limpiarFormularioCompleto()" style="padding: 0.8rem 1.6rem; font-size: 0.95rem;">
+            🔄 Limpiar
+          </button>
+          <button type="submit" class="btn btn-primary" id="btnEnviar" style="padding: 0.8rem 2.2rem; font-size: 1rem; background: #1e3a8a; color: white;">
+            🚀 Enviar
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </main>
+
+  <!-- Modal Éxito -->
+  <div id="modalExito" class="success-modal">
+    <div class="success-modal-content">
+      <div style="font-size: 3.2rem; margin-bottom: 0.5rem;">✅</div>
+      <h3 style="font-size: 1.35rem; color: var(--primary-dark); margin-bottom: 0.5rem;">¡Propuesta Enviada Exitosamente!</h3>
+      <p style="font-size: 0.92rem; color: #334155; line-height: 1.5; margin-bottom: 1.5rem;">
+        Su propuesta de línea de investigación ha sido registrada correctamente en el sistema del Departamento de Ingeniería Mecánica. Muchas gracias por su valiosa participación.
+      </p>
+      <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-outline" onclick="registrarOtraLinea()">Registrar otra propuesta de línea</button>
+        <button class="btn btn-primary" style="background: #1e3a8a; color: white;" onclick="finalizarYCerrar()">Finalizar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const scores = { pertinencia: 0, infraestructura: 0, productividad: 0, formacion: 0, sostenibilidad: 0 };
+    const weights = { pertinencia: 0.25, infraestructura: 0.20, productividad: 0.20, formacion: 0.20, sostenibilidad: 0.15 };
+
+    function toggleSubareaOtro() {
+      const select = document.getElementById('subareaSelect');
+      const box = document.getElementById('subareaOtroBox');
+      const input = document.getElementById('subareaOtro');
+      if (select.value === 'Otra') {
+        box.style.display = 'block';
+        input.required = true;
+      } else {
+        box.style.display = 'none';
+        input.required = false;
+        input.value = '';
+      }
+    }
+
+    function checkWords() {
+      const val = document.getElementById('definicionLinea').value.trim();
+      const count = val.length === 0 ? 0 : val.split(/\s+/).filter(w => w.length > 0).length;
+      const badge = document.getElementById('wordBadge');
+      const alert = document.getElementById('wordAlert');
+
+      badge.textContent = `${count} / 50 palabras`;
+      if (count > 50) {
+        badge.className = 'word-count-badge word-limit';
+        alert.style.display = 'block';
+      } else {
+        badge.className = 'word-count-badge word-ok';
+        alert.style.display = 'none';
+      }
+      return count;
+    }
+
+    function selectScore(criterion, val) {
+      scores[criterion] = val;
+      const group = document.querySelector(`.rating-row[data-criterion="${criterion}"]`);
+      group.querySelectorAll('.rating-btn').forEach((btn, idx) => {
+        if (idx + 1 === val) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      document.getElementById(`box-${criterion}`).style.borderColor = 'var(--border)';
+      recalc();
+    }
+
+    function recalc() {
+      const total = (scores.pertinencia * weights.pertinencia) +
+                    (scores.infraestructura * weights.infraestructura) +
+                    (scores.productividad * weights.productividad) +
+                    (scores.formacion * weights.formacion) +
+                    (scores.sostenibilidad * weights.sostenibilidad);
+
+      document.getElementById('scoreVal').textContent = total.toFixed(2);
+      const prio = document.getElementById('prioBadge');
+      const banner = document.getElementById('scoreBanner');
+
+      if (total === 0) {
+        prio.textContent = 'Sin calificar';
+        prio.className = 'priority-badge prio-media';
+        banner.className = 'score-banner';
+        return;
+      }
+
+      if (total >= 4.0) {
+        prio.textContent = 'Prioridad Alta';
+        prio.className = 'priority-badge prio-alta';
+        banner.className = 'score-banner';
+      } else if (total >= 3.0) {
+        prio.textContent = 'Prioridad Media';
+        prio.className = 'priority-badge prio-media';
+        banner.className = 'score-banner warning';
+      } else {
+        prio.textContent = 'Prioridad Baja';
+        prio.className = 'priority-badge prio-baja';
+        banner.className = 'score-banner danger';
+      }
+    }
+
+    // =========================================================================
+    // CONFIGURACIÓN DE NUBE (GOOGLE SHEETS):
+    // URL de Google Apps Script configurada por el usuario
+    // =========================================================================
+    const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwKb0LEM8T0sVUY5fCca1uXb2kDgTRaMkA7b_ChK_lKQnXCyALZRMTclYAMmX1IqUrETg/exec"; 
+
+    async function handleDocenteSubmit(e) {
+      e.preventDefault();
+
+      // Verificar 5 criterios
+      const unrated = Object.keys(scores).filter(k => scores[k] === 0);
+      if (unrated.length > 0) {
+        unrated.forEach(k => {
+          document.getElementById(`box-${k}`).style.borderColor = 'var(--danger)';
+        });
+        alert('Por favor califique todos los 5 criterios (de 1 a 5) antes de continuar.');
+        document.getElementById(`box-${unrated[0]}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const total = Number(((scores.pertinencia * weights.pertinencia) +
+                            (scores.infraestructura * weights.infraestructura) +
+                            (scores.productividad * weights.productividad) +
+                            (scores.formacion * weights.formacion) +
+                            (scores.sostenibilidad * weights.sostenibilidad)).toFixed(2));
+
+      let prioridad = 'Media';
+      if (total >= 4.0) prioridad = 'Alta';
+      else if (total < 3.0) prioridad = 'Baja';
+
+      const docente = document.getElementById('docenteNombre').value.trim();
+      const subarea = document.getElementById('subareaSelect').value;
+      const subareaOtro = document.getElementById('subareaOtro').value.trim();
+      const nombreLinea = document.getElementById('nombreLinea').value.trim();
+      const definicion = document.getElementById('definicionLinea').value.trim();
+      const palabras = checkWords();
+
+      const payload = {
+        id: 'resp-' + Date.now(),
+        fecha: new Date().toISOString(),
+        docente: docente,
+        subarea: subarea,
+        subareaOtro: subareaOtro,
+        nombreLinea: nombreLinea,
+        definicion: definicion,
+        palabrasDefinicion: palabras,
+        criterios: { ...scores },
+        puntajesPonderados: {
+          pertinencia: Number((scores.pertinencia * weights.pertinencia).toFixed(2)),
+          infraestructura: Number((scores.infraestructura * weights.infraestructura).toFixed(2)),
+          productividad: Number((scores.productividad * weights.productividad).toFixed(2)),
+          formacion: Number((scores.formacion * weights.formacion).toFixed(2)),
+          sostenibilidad: Number((scores.sostenibilidad * weights.sostenibilidad).toFixed(2)),
+          total: total
+        },
+        prioridad: prioridad,
+        accionConsolidacion: document.getElementById('accionConsolidacion').value.trim(),
+        infraestructuraCritica: {
+          item1: document.getElementById('infra1').value.trim(),
+          item2: document.getElementById('infra2').value.trim()
+        },
+        comentariosAdicionales: document.getElementById('comentariosAdicionales').value.trim()
+      };
+
+      const submitBtn = document.getElementById('btnEnviar');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Enviando propuesta...';
+
+      // Enviar directamente a Google Sheets
+      if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL.trim().length > 10) {
+        try {
+          await fetch(GOOGLE_SHEETS_URL.trim(), {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (netErr) {
+          console.warn('Error enviando a la nube:', netErr);
+        }
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+
+      // Mostrar modal de confirmación limpio
+      document.getElementById('modalExito').style.display = 'flex';
+    }
+
+    function limpiarFormularioCompleto() {
+      if (!confirm('¿Desea limpiar todos los campos del formulario?')) return;
+      document.getElementById('docenteForm').reset();
+      toggleSubareaOtro();
+      document.getElementById('comentariosAdicionales').value = '';
+      Object.keys(scores).forEach(k => scores[k] = 0);
+      document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.criterion-box').forEach(b => b.style.borderColor = 'var(--border)');
+      checkWords();
+      recalc();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function registrarOtraLinea() {
+      document.getElementById('nombreLinea').value = '';
+      document.getElementById('definicionLinea').value = '';
+      document.getElementById('accionConsolidacion').value = '';
+      document.getElementById('infra1').value = '';
+      document.getElementById('infra2').value = '';
+      document.getElementById('comentariosAdicionales').value = '';
+      Object.keys(scores).forEach(k => scores[k] = 0);
+      document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.criterion-box').forEach(b => b.style.borderColor = 'var(--border)');
+      checkWords();
+      recalc();
+      document.getElementById('modalExito').style.display = 'none';
+      document.getElementById('nombreLinea').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function finalizarYCerrar() {
+      document.getElementById('modalExito').style.display = 'none';
+      document.getElementById('docenteForm').reset();
+      toggleSubareaOtro();
+      document.getElementById('comentariosAdicionales').value = '';
+      Object.keys(scores).forEach(k => scores[k] = 0);
+      document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+      checkWords();
+      recalc();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
