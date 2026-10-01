@@ -45,6 +45,53 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// Función de normalización para asegurar retrocompatibilidad con respuestas previas/oficiales
+function normalizeResponse(item) {
+  if (!item || typeof item !== 'object') return item;
+  if (!item.criterios) item.criterios = {};
+  if (!item.puntajesPonderados) item.puntajesPonderados = {};
+
+  // Si talento no está definido o es nulo (por respuestas oficiales guardadas con el esquema previo),
+  // se le asigna la calificación que el docente dio a infraestructura
+  if (item.criterios.talento === undefined || item.criterios.talento === null) {
+    item.criterios.talento = (item.criterios.infraestructura !== undefined && item.criterios.infraestructura !== null)
+      ? Number(item.criterios.infraestructura)
+      : 0;
+  } else {
+    item.criterios.talento = Number(item.criterios.talento);
+  }
+
+  // Recalcular puntajes ponderados consistentes con la matriz de 6 criterios (10% infra, 10% talento)
+  const c = item.criterios;
+  const w = AppState.weights;
+
+  const pPert = Number(((Number(c.pertinencia) || 0) * w.pertinencia).toFixed(2));
+  const pInfra = Number(((Number(c.infraestructura) || 0) * w.infraestructura).toFixed(2));
+  const pTal = Number(((Number(c.talento) || 0) * w.talento).toFixed(2));
+  const pProd = Number(((Number(c.productividad) || 0) * w.productividad).toFixed(2));
+  const pForm = Number(((Number(c.formacion) || 0) * w.formacion).toFixed(2));
+  const pSost = Number(((Number(c.sostenibilidad) || 0) * w.sostenibilidad).toFixed(2));
+  const total = Number((pPert + pInfra + pTal + pProd + pForm + pSost).toFixed(2));
+
+  item.puntajesPonderados = {
+    pertinencia: pPert,
+    infraestructura: pInfra,
+    talento: pTal,
+    productividad: pProd,
+    formacion: pForm,
+    sostenibilidad: pSost,
+    total: total
+  };
+
+  if (!item.prioridad || item.prioridad === 'Sin calificar') {
+    if (total >= 4.0) item.prioridad = 'Alta';
+    else if (total >= 3.0) item.prioridad = 'Media';
+    else item.prioridad = 'Baja';
+  }
+
+  return item;
+}
+
 async function checkServerAndLoadData() {
   // 1. Intentar cargar primero los datos en vivo desde Google Sheets
   try {
@@ -52,9 +99,9 @@ async function checkServerAndLoadData() {
     if (cloudRes.ok) {
       const cloudData = await cloudRes.json();
       if (Array.isArray(cloudData) && cloudData.length > 0) {
-        AppState.responses = cloudData;
-        localStorage.setItem('respuestas_lineas_backup', JSON.stringify(cloudData));
-        console.log('[*] Conectado en vivo a Google Sheets. Respuestas:', cloudData.length);
+        AppState.responses = cloudData.map(normalizeResponse);
+        localStorage.setItem('respuestas_lineas_backup', JSON.stringify(AppState.responses));
+        console.log('[*] Conectado en vivo a Google Sheets. Respuestas:', AppState.responses.length);
         updateUI();
         return;
       }
@@ -69,7 +116,7 @@ async function checkServerAndLoadData() {
     if (res.ok) {
       const data = await res.json();
       AppState.serverAvailable = true;
-      AppState.responses = Array.isArray(data) ? data : [];
+      AppState.responses = (Array.isArray(data) ? data : []).map(normalizeResponse);
       localStorage.setItem('respuestas_lineas_backup', JSON.stringify(AppState.responses));
       console.log('[*] Conectado al servidor local. Respuestas cargadas:', AppState.responses.length);
       updateUI();
@@ -83,7 +130,7 @@ async function checkServerAndLoadData() {
   const local = localStorage.getItem('respuestas_lineas_backup');
   if (local) {
     try {
-      AppState.responses = JSON.parse(local);
+      AppState.responses = JSON.parse(local).map(normalizeResponse);
     } catch (e) {
       AppState.responses = [];
     }
@@ -91,7 +138,7 @@ async function checkServerAndLoadData() {
     try {
       const sampleRes = await fetch('ejemplo_respuestas.json');
       if (sampleRes.ok) {
-        AppState.responses = await sampleRes.json();
+        AppState.responses = (await sampleRes.json()).map(normalizeResponse);
         localStorage.setItem('respuestas_lineas_backup', JSON.stringify(AppState.responses));
       }
     } catch (e) {
@@ -557,7 +604,7 @@ function renderTable(list) {
       <td><span style="font-size: 0.8rem; background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px;">${escapeHtml(subareaDisplay)}</span></td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.pertinencia || '-'}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.infraestructura || '-'}</td>
-      <td style="text-align: center; font-weight: 600;">${item.criterios?.talento || '-'}</td>
+      <td style="text-align: center; font-weight: 600;">${(item.criterios?.talento !== undefined && item.criterios?.talento !== null) ? item.criterios.talento : (item.criterios?.infraestructura || '-')}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.productividad || '-'}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.formacion || '-'}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.sostenibilidad || '-'}</td>
@@ -1081,7 +1128,7 @@ async function syncWithGoogleSheets(silent = false) {
         return;
       }
 
-      AppState.responses = cloudData;
+      AppState.responses = cloudData.map(normalizeResponse);
       localStorage.setItem('respuestas_lineas_backup', JSON.stringify(AppState.responses));
 
       if (AppState.serverAvailable) {
