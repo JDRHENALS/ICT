@@ -267,7 +267,7 @@
     <div class="info-card">
       <strong>📌 Instrucciones:</strong>
       <p style="margin-top: 0.3rem; line-height: 1.5;">
-        Diligencie sus datos, formule su propuesta de línea de investigación y califique cada uno de los 5 criterios en una escala de 1 a 5 (donde 1 = Muy bajo / Deficiente y 5 = Muy alto / Excelente). Al finalizar, presione <strong>"Enviar"</strong> para que su propuesta quede registrada automáticamente en el sistema del departamento.
+        Diligencie sus datos, formule su propuesta de línea de investigación y califique cada uno de los 6 criterios en una escala de 1 a 5 (donde 1 = Muy bajo / Deficiente y 5 = Muy alto / Excelente). Al finalizar, presione <strong>"Enviar"</strong> para que su propuesta quede registrada automáticamente en el sistema del departamento.
       </p>
     </div>
 
@@ -289,9 +289,9 @@
           <label class="form-label" for="subareaSelect">Subárea de Enfoque *</label>
           <select id="subareaSelect" class="form-select" onchange="toggleSubareaOtro()" required>
             <option value="">-- Seleccione una subárea --</option>
-            <option value="Materiales y Manufactura">Materiales y Manufactura</option>
-            <option value="Termofluidos y Energía">Termofluidos y Energía</option>
-            <option value="Diseño y Mecatrónica">Diseño y Mecatrónica</option>
+            <option value="Diseño, automatización y control">Diseño, automatización y control</option>
+            <option value="Energía y eficiencia energética">Energía y eficiencia energética</option>
+            <option value="Materiales y procesos de manufactura">Materiales y procesos de manufactura</option>
             <option value="Otra">Otra (especificar)</option>
           </select>
         </div>
@@ -353,9 +353,9 @@
         <div class="criterion-box" id="box-infraestructura">
           <div class="criterion-title-row">
             <span class="criterion-name">2. Capacidad Instalada e Infraestructura</span>
-            <span class="weight-badge">Ponderación: 20%</span>
+            <span class="weight-badge">Ponderación: 10%</span>
           </div>
-          <p class="criterion-desc">Disponibilidad de laboratorios, equipos, software especializado y talento humano calificado.</p>
+          <p class="criterion-desc">Disponibilidad de laboratorios, equipos y software especializado.</p>
           <div class="rating-row" data-criterion="infraestructura">
             <button type="button" class="rating-btn" onclick="selectScore('infraestructura', 1)"><span class="rating-num">1</span><span class="rating-lbl">Muy bajo</span></button>
             <button type="button" class="rating-btn" onclick="selectScore('infraestructura', 2)"><span class="rating-num">2</span><span class="rating-lbl">Bajo</span></button>
@@ -366,9 +366,25 @@
         </div>
 
         <!-- C3 -->
+        <div class="criterion-box" id="box-talento">
+          <div class="criterion-title-row">
+            <span class="criterion-name">3. Talento Humano</span>
+            <span class="weight-badge">Ponderación: 10%</span>
+          </div>
+          <p class="criterion-desc">Disponibilidad de investigadores, docentes y personal de apoyo calificado en el área.</p>
+          <div class="rating-row" data-criterion="talento">
+            <button type="button" class="rating-btn" onclick="selectScore('talento', 1)"><span class="rating-num">1</span><span class="rating-lbl">Muy bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('talento', 2)"><span class="rating-num">2</span><span class="rating-lbl">Bajo</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('talento', 3)"><span class="rating-num">3</span><span class="rating-lbl">Medio</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('talento', 4)"><span class="rating-num">4</span><span class="rating-lbl">Alto</span></button>
+            <button type="button" class="rating-btn" onclick="selectScore('talento', 5)"><span class="rating-num">5</span><span class="rating-lbl">Excelente</span></button>
+          </div>
+        </div>
+
+        <!-- C4 -->
         <div class="criterion-box" id="box-productividad">
           <div class="criterion-title-row">
-            <span class="criterion-name">3. Productividad Académica y Transferencia</span>
+            <span class="criterion-name">4. Productividad Académica y Transferencia</span>
             <span class="weight-badge">Ponderación: 20%</span>
           </div>
           <p class="criterion-desc">Potencial de publicación en revistas indexadas (Scopus/WoS), patentes, prototipos o diseño de productos.</p>
@@ -381,10 +397,10 @@
           </div>
         </div>
 
-        <!-- C4 -->
+        <!-- C5 -->
         <div class="criterion-box" id="box-formacion">
           <div class="criterion-title-row">
-            <span class="criterion-name">4. Capacidad de Formación</span>
+            <span class="criterion-name">5. Capacidad de Formación</span>
             <span class="weight-badge">Ponderación: 20%</span>
           </div>
           <p class="criterion-desc">Oportunidad de vinculación de estudiantes de pregrado (semilleros), maestría y doctorado.</p>
@@ -397,10 +413,10 @@
           </div>
         </div>
 
-        <!-- C5 -->
+        <!-- C6 -->
         <div class="criterion-box" id="box-sostenibilidad">
           <div class="criterion-title-row">
-            <span class="criterion-name">5. Sostenibilidad Financiera</span>
+            <span class="criterion-name">6. Sostenibilidad Financiera</span>
             <span class="weight-badge">Ponderación: 15%</span>
           </div>
           <p class="criterion-desc">Viabilidad para captar fondos externos (convocatorias nacionales/internacionales, consultoría especializada, regalías).</p>
@@ -417,7 +433,7 @@
         <div class="score-banner" id="scoreBanner">
           <div>
             <div style="font-size: 0.82rem; font-weight: 700; color: #475569; text-transform: uppercase;">Puntaje Ponderado Estimado</div>
-            <div style="font-size: 0.78rem; color: #64748b;">(C1 × 25%) + (C2 × 20%) + (C3 × 20%) + (C4 × 20%) + (C5 × 15%)</div>
+            <div style="font-size: 0.78rem; color: #64748b;">(C1 × 25%) + (C2 × 10%) + (C3 × 10%) + (C4 × 20%) + (C5 × 20%) + (C6 × 15%)</div>
           </div>
           <div style="text-align: right; display: flex; align-items: center; gap: 0.75rem;">
             <div>
@@ -503,8 +519,8 @@
   </div>
 
   <script>
-    const scores = { pertinencia: 0, infraestructura: 0, productividad: 0, formacion: 0, sostenibilidad: 0 };
-    const weights = { pertinencia: 0.25, infraestructura: 0.20, productividad: 0.20, formacion: 0.20, sostenibilidad: 0.15 };
+    const scores = { pertinencia: 0, infraestructura: 0, talento: 0, productividad: 0, formacion: 0, sostenibilidad: 0 };
+    const weights = { pertinencia: 0.25, infraestructura: 0.10, talento: 0.10, productividad: 0.20, formacion: 0.20, sostenibilidad: 0.15 };
 
     function toggleSubareaOtro() {
       const select = document.getElementById('subareaSelect');
@@ -551,6 +567,7 @@
     function recalc() {
       const total = (scores.pertinencia * weights.pertinencia) +
                     (scores.infraestructura * weights.infraestructura) +
+                    (scores.talento * weights.talento) +
                     (scores.productividad * weights.productividad) +
                     (scores.formacion * weights.formacion) +
                     (scores.sostenibilidad * weights.sostenibilidad);
@@ -590,19 +607,20 @@
     async function handleDocenteSubmit(e) {
       e.preventDefault();
 
-      // Verificar 5 criterios
+      // Verificar 6 criterios
       const unrated = Object.keys(scores).filter(k => scores[k] === 0);
       if (unrated.length > 0) {
         unrated.forEach(k => {
           document.getElementById(`box-${k}`).style.borderColor = 'var(--danger)';
         });
-        alert('Por favor califique todos los 5 criterios (de 1 a 5) antes de continuar.');
+        alert('Por favor califique todos los 6 criterios (de 1 a 5) antes de continuar.');
         document.getElementById(`box-${unrated[0]}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
 
       const total = Number(((scores.pertinencia * weights.pertinencia) +
                             (scores.infraestructura * weights.infraestructura) +
+                            (scores.talento * weights.talento) +
                             (scores.productividad * weights.productividad) +
                             (scores.formacion * weights.formacion) +
                             (scores.sostenibilidad * weights.sostenibilidad)).toFixed(2));
@@ -631,6 +649,7 @@
         puntajesPonderados: {
           pertinencia: Number((scores.pertinencia * weights.pertinencia).toFixed(2)),
           infraestructura: Number((scores.infraestructura * weights.infraestructura).toFixed(2)),
+          talento: Number((scores.talento * weights.talento).toFixed(2)),
           productividad: Number((scores.productividad * weights.productividad).toFixed(2)),
           formacion: Number((scores.formacion * weights.formacion).toFixed(2)),
           sostenibilidad: Number((scores.sostenibilidad * weights.sostenibilidad).toFixed(2)),

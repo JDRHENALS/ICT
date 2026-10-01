@@ -82,9 +82,9 @@
               <label class="form-label" for="subareaSelect">Subárea de Enfoque *</label>
               <select id="subareaSelect" class="form-select" onchange="toggleSubareaOtro()" required>
                 <option value="">-- Seleccione una subárea --</option>
-                <option value="Materiales y Manufactura">Materiales y Manufactura</option>
-                <option value="Termofluidos y Energía">Termofluidos y Energía</option>
-                <option value="Diseño y Mecatrónica">Diseño y Mecatrónica</option>
+                <option value="Diseño, automatización y control">Diseño, automatización y control</option>
+                <option value="Energía y eficiencia energética">Energía y eficiencia energética</option>
+                <option value="Materiales y procesos de manufactura">Materiales y procesos de manufactura</option>
                 <option value="Otra">Otra (especificar)</option>
               </select>
             </div>
@@ -159,10 +159,10 @@
           <div class="criterion-card" id="card-criterio-2">
             <div class="criterion-header">
               <span class="criterion-title">2. Capacidad Instalada e Infraestructura</span>
-              <span class="weight-badge">Ponderación: 20%</span>
+              <span class="weight-badge">Ponderación: 10%</span>
             </div>
             <p class="criterion-desc">
-              Disponibilidad de laboratorios, equipos, software especializado y talento humano calificado dentro del departamento.
+              Disponibilidad de laboratorios, equipos y software especializado dentro del departamento.
             </p>
             <div class="rating-scale-group" data-criterion="infraestructura">
               <button type="button" class="rating-btn" onclick="setRating('infraestructura', 1)"><span class="rating-num">1</span><span class="rating-label">Muy Bajo</span></button>
@@ -173,10 +173,28 @@
             </div>
           </div>
 
-          <!-- Criterio 3: Productividad -->
+          <!-- Criterio 3: Talento Humano -->
           <div class="criterion-card" id="card-criterio-3">
             <div class="criterion-header">
-              <span class="criterion-title">3. Productividad Académica y Transferencia</span>
+              <span class="criterion-title">3. Talento Humano</span>
+              <span class="weight-badge">Ponderación: 10%</span>
+            </div>
+            <p class="criterion-desc">
+              Disponibilidad de investigadores, docentes y personal de apoyo calificado en el área.
+            </p>
+            <div class="rating-scale-group" data-criterion="talento">
+              <button type="button" class="rating-btn" onclick="setRating('talento', 1)"><span class="rating-num">1</span><span class="rating-label">Muy Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('talento', 2)"><span class="rating-num">2</span><span class="rating-label">Bajo</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('talento', 3)"><span class="rating-num">3</span><span class="rating-label">Medio</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('talento', 4)"><span class="rating-num">4</span><span class="rating-label">Alto</span></button>
+              <button type="button" class="rating-btn" onclick="setRating('talento', 5)"><span class="rating-num">5</span><span class="rating-label">Muy Alto</span></button>
+            </div>
+          </div>
+
+          <!-- Criterio 4: Productividad -->
+          <div class="criterion-card" id="card-criterio-4">
+            <div class="criterion-header">
+              <span class="criterion-title">4. Productividad Académica y Transferencia</span>
               <span class="weight-badge">Ponderación: 20%</span>
             </div>
             <p class="criterion-desc">
@@ -191,10 +209,10 @@
             </div>
           </div>
 
-          <!-- Criterio 4: Capacidad de Formación -->
-          <div class="criterion-card" id="card-criterio-4">
+          <!-- Criterio 5: Capacidad de Formación -->
+          <div class="criterion-card" id="card-criterio-5">
             <div class="criterion-header">
-              <span class="criterion-title">4. Capacidad de Formación</span>
+              <span class="criterion-title">5. Capacidad de Formación</span>
               <span class="weight-badge">Ponderación: 20%</span>
             </div>
             <p class="criterion-desc">
@@ -209,10 +227,10 @@
             </div>
           </div>
 
-          <!-- Criterio 5: Sostenibilidad Financiera -->
-          <div class="criterion-card" id="card-criterio-5">
+          <!-- Criterio 6: Sostenibilidad Financiera -->
+          <div class="criterion-card" id="card-criterio-6">
             <div class="criterion-header">
-              <span class="criterion-title">5. Sostenibilidad Financiera</span>
+              <span class="criterion-title">6. Sostenibilidad Financiera</span>
               <span class="weight-badge">Ponderación: 15%</span>
             </div>
             <p class="criterion-desc">
@@ -232,7 +250,7 @@
             <div>
               <div style="font-size: 0.85rem; font-weight: 700; color: #475569; text-transform: uppercase;">Puntaje Ponderado Total (Escala 1.0 - 5.0)</div>
               <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.2rem;" id="scoreFormulaDesc">
-                Fórmula: (C1 × 25%) + (C2 × 20%) + (C3 × 20%) + (C4 × 20%) + (C5 × 15%)
+                Fórmula: (C1 × 25%) + (C2 × 10%) + (C3 × 10%) + (C4 × 20%) + (C5 × 20%) + (C6 × 15%)
               </div>
             </div>
             <div style="text-align: right; display: flex; align-items: center; gap: 1rem;">
@@ -385,9 +403,9 @@
           <span>Subárea:</span>
           <select id="filterSubarea" class="form-select" style="width: 200px; padding: 0.4rem 0.6rem;" onchange="renderTableAndCharts()">
             <option value="ALL">Todas las subáreas</option>
-            <option value="Materiales y Manufactura">Materiales y Manufactura</option>
-            <option value="Termofluidos y Energía">Termofluidos y Energía</option>
-            <option value="Diseño y Mecatrónica">Diseño y Mecatrónica</option>
+            <option value="Diseño, automatización y control">Diseño, automatización y control</option>
+            <option value="Energía y eficiencia energética">Energía y eficiencia energética</option>
+            <option value="Materiales y procesos de manufactura">Materiales y procesos de manufactura</option>
             <option value="Otra">Otras subáreas</option>
           </select>
         </div>
@@ -426,7 +444,8 @@
                 <th>Docente / Proponente</th>
                 <th>Subárea</th>
                 <th style="text-align: center;" title="Pertinencia Territorial e Industrial (25%)">Pert. (25%)</th>
-                <th style="text-align: center;" title="Capacidad Instalada e Infraestructura (20%)">Infra. (20%)</th>
+                <th style="text-align: center;" title="Capacidad Instalada e Infraestructura (10%)">Infra. (10%)</th>
+                <th style="text-align: center;" title="Talento Humano (10%)">Talento (10%)</th>
                 <th style="text-align: center;" title="Productividad Académica y Transferencia (20%)">Prod. (20%)</th>
                 <th style="text-align: center;" title="Capacidad de Formación (20%)">Form. (20%)</th>
                 <th style="text-align: center;" title="Sostenibilidad Financiera (15%)">Sost. (15%)</th>

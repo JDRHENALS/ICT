@@ -11,13 +11,15 @@ const AppState = {
   currentRatings: {
     pertinencia: 0,
     infraestructura: 0,
+    talento: 0,
     productividad: 0,
     formacion: 0,
     sostenibilidad: 0
   },
   weights: {
     pertinencia: 0.25,
-    infraestructura: 0.20,
+    infraestructura: 0.10,
+    talento: 0.10,
     productividad: 0.20,
     formacion: 0.20,
     sostenibilidad: 0.15
@@ -182,7 +184,7 @@ function setRating(criterion, value) {
 }
 
 function getCriterionIndex(criterion) {
-  const map = { pertinencia: 1, infraestructura: 2, productividad: 3, formacion: 4, sostenibilidad: 5 };
+  const map = { pertinencia: 1, infraestructura: 2, talento: 3, productividad: 4, formacion: 5, sostenibilidad: 6 };
   return map[criterion] || 1;
 }
 
@@ -193,6 +195,7 @@ function updateScoreCalculation() {
   // Cálculo ponderado
   const total = (r.pertinencia * w.pertinencia) +
                 (r.infraestructura * w.infraestructura) +
+                (r.talento * w.talento) +
                 (r.productividad * w.productividad) +
                 (r.formacion * w.formacion) +
                 (r.sostenibilidad * w.sostenibilidad);
@@ -232,7 +235,7 @@ function updateScoreCalculation() {
 async function handleFormSubmit(e) {
   e.preventDefault();
 
-  // Validar que todos los 5 criterios hayan sido calificados
+  // Validar que todos los 6 criterios hayan sido calificados
   const missing = [];
   for (const [key, val] of Object.entries(AppState.currentRatings)) {
     if (val === 0) missing.push(key);
@@ -246,7 +249,7 @@ async function handleFormSubmit(e) {
         card.style.borderColor = 'var(--danger)';
       }
     });
-    showToast('⚠️ Por favor califique todos los 5 criterios (1 a 5).', 'warning');
+    showToast('⚠️ Por favor califique todos los 6 criterios (1 a 5).', 'warning');
     const firstMissing = document.getElementById(`card-criterio-${getCriterionIndex(missing[0])}`);
     if (firstMissing) firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
@@ -256,6 +259,7 @@ async function handleFormSubmit(e) {
   const w = AppState.weights;
   const totalScore = Number(((r.pertinencia * w.pertinencia) +
                              (r.infraestructura * w.infraestructura) +
+                             (r.talento * w.talento) +
                              (r.productividad * w.productividad) +
                              (r.formacion * w.formacion) +
                              (r.sostenibilidad * w.sostenibilidad)).toFixed(2));
@@ -280,6 +284,7 @@ async function handleFormSubmit(e) {
     puntajesPonderados: {
       pertinencia: Number((r.pertinencia * w.pertinencia).toFixed(2)),
       infraestructura: Number((r.infraestructura * w.infraestructura).toFixed(2)),
+      talento: Number((r.talento * w.talento).toFixed(2)),
       productividad: Number((r.productividad * w.productividad).toFixed(2)),
       formacion: Number((r.formacion * w.formacion).toFixed(2)),
       sostenibilidad: Number((r.sostenibilidad * w.sostenibilidad).toFixed(2)),
@@ -345,7 +350,7 @@ function resetLineOnly() {
   document.getElementById('infraItem1').value = '';
   document.getElementById('infraItem2').value = '';
   if (document.getElementById('comentariosAdicionales')) document.getElementById('comentariosAdicionales').value = '';
-  AppState.currentRatings = { pertinencia: 0, infraestructura: 0, productividad: 0, formacion: 0, sostenibilidad: 0 };
+  AppState.currentRatings = { pertinencia: 0, infraestructura: 0, talento: 0, productividad: 0, formacion: 0, sostenibilidad: 0 };
   document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
   updateWordCount();
   updateScoreCalculation();
@@ -356,7 +361,7 @@ function resetEvaluationForm() {
   document.getElementById('evaluationForm').reset();
   toggleSubareaOtro();
   if (document.getElementById('comentariosAdicionales')) document.getElementById('comentariosAdicionales').value = '';
-  AppState.currentRatings = { pertinencia: 0, infraestructura: 0, productividad: 0, formacion: 0, sostenibilidad: 0 };
+  AppState.currentRatings = { pertinencia: 0, infraestructura: 0, talento: 0, productividad: 0, formacion: 0, sostenibilidad: 0 };
   document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.criterion-card').forEach(card => card.style.borderColor = 'var(--border)');
   updateWordCount();
@@ -375,6 +380,7 @@ function downloadSingleResponseJson() {
   const w = AppState.weights;
   const total = Number(((r.pertinencia * w.pertinencia) +
                         (r.infraestructura * w.infraestructura) +
+                        (r.talento * w.talento) +
                         (r.productividad * w.productividad) +
                         (r.formacion * w.formacion) +
                         (r.sostenibilidad * w.sostenibilidad)).toFixed(2));
@@ -396,6 +402,7 @@ function downloadSingleResponseJson() {
     puntajesPonderados: {
       pertinencia: Number((r.pertinencia * w.pertinencia).toFixed(2)),
       infraestructura: Number((r.infraestructura * w.infraestructura).toFixed(2)),
+      talento: Number((r.talento * w.talento).toFixed(2)),
       productividad: Number((r.productividad * w.productividad).toFixed(2)),
       formacion: Number((r.formacion * w.formacion).toFixed(2)),
       sostenibilidad: Number((r.sostenibilidad * w.sostenibilidad).toFixed(2)),
@@ -519,7 +526,7 @@ function renderTable(list) {
   if (list.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="12" style="text-align: center; padding: 2rem; color: #94a3b8;">
+        <td colspan="13" style="text-align: center; padding: 2rem; color: #94a3b8;">
           No se encontraron propuestas con los criterios seleccionados.
         </td>
       </tr>
@@ -550,6 +557,7 @@ function renderTable(list) {
       <td><span style="font-size: 0.8rem; background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px;">${escapeHtml(subareaDisplay)}</span></td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.pertinencia || '-'}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.infraestructura || '-'}</td>
+      <td style="text-align: center; font-weight: 600;">${item.criterios?.talento || '-'}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.productividad || '-'}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.formacion || '-'}</td>
       <td style="text-align: center; font-weight: 600;">${item.criterios?.sostenibilidad || '-'}</td>
@@ -600,6 +608,7 @@ function renderRadarChart(list) {
     data: [
       item.criterios?.pertinencia || 0,
       item.criterios?.infraestructura || 0,
+      item.criterios?.talento || 0,
       item.criterios?.productividad || 0,
       item.criterios?.formacion || 0,
       item.criterios?.sostenibilidad || 0
@@ -617,10 +626,11 @@ function renderRadarChart(list) {
     data: {
       labels: [
         '1. Pertinencia (25%)',
-        '2. Infraestructura (20%)',
-        '3. Productividad (20%)',
-        '4. Formación (20%)',
-        '5. Sostenibilidad (15%)'
+        '2. Infraestructura (10%)',
+        '3. Talento (10%)',
+        '4. Productividad (20%)',
+        '5. Formación (20%)',
+        '6. Sostenibilidad (15%)'
       ],
       datasets: datasets
     },
@@ -803,24 +813,30 @@ function showItemDetail(id) {
           </tr>
           <tr>
             <td>2. Capacidad Instalada e Infraestructura</td>
-            <td>20%</td>
+            <td>10%</td>
             <td style="text-align: center;">${c.infraestructura}</td>
             <td style="text-align: center;">${p.infraestructura}</td>
           </tr>
           <tr>
-            <td>3. Productividad Académica y Transferencia</td>
+            <td>3. Talento Humano</td>
+            <td>10%</td>
+            <td style="text-align: center;">${c.talento || 0}</td>
+            <td style="text-align: center;">${p.talento || 0}</td>
+          </tr>
+          <tr>
+            <td>4. Productividad Académica y Transferencia</td>
             <td>20%</td>
             <td style="text-align: center;">${c.productividad}</td>
             <td style="text-align: center;">${p.productividad}</td>
           </tr>
           <tr>
-            <td>4. Capacidad de Formación</td>
+            <td>5. Capacidad de Formación</td>
             <td>20%</td>
             <td style="text-align: center;">${c.formacion}</td>
             <td style="text-align: center;">${p.formacion}</td>
           </tr>
           <tr>
-            <td>5. Sostenibilidad Financiera</td>
+            <td>6. Sostenibilidad Financiera</td>
             <td>15%</td>
             <td style="text-align: center;">${c.sostenibilidad}</td>
             <td style="text-align: center;">${p.sostenibilidad}</td>
@@ -907,7 +923,8 @@ async function exportExcelFull() {
         'Subárea': item.subarea === 'Otra' && item.subareaOtro ? `Otra: ${item.subareaOtro}` : item.subarea,
         'Línea de Investigación': item.nombreLinea,
         'Pertinencia Territorial (25%)': item.criterios?.pertinencia || 0,
-        'Capacidad Instalada (20%)': item.criterios?.infraestructura || 0,
+        'Capacidad Instalada (10%)': item.criterios?.infraestructura || 0,
+        'Talento Humano (10%)': item.criterios?.talento || 0,
         'Productividad Académica (20%)': item.criterios?.productividad || 0,
         'Capacidad de Formación (20%)': item.criterios?.formacion || 0,
         'Sostenibilidad Financiera (15%)': item.criterios?.sostenibilidad || 0,

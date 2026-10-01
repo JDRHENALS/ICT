@@ -1,0 +1,172 @@
+[
+  {
+    "id": "resp-001",
+    "fecha": "2026-09-29T10:15:00.000Z",
+    "docente": "Dr. Carlos Eduardo Restrepo",
+    "subarea": "Energía y eficiencia energética",
+    "subareaOtro": "",
+    "nombreLinea": "Aprovechamiento Energético de Biomasa Agroindustrial del Sinú y Fuentes No Convencionales",
+    "definicion": "Investigación aplicada a la gasificación, pirólisis y combustión limpia de residuos agrícolas regionales (cascarilla de arroz, bagazo de caña) para generación térmica y eléctrica descentralizada.",
+    "palabrasDefinicion": 26,
+    "criterios": {
+      "pertinencia": 5,
+      "infraestructura": 4,
+      "talento": 5,
+      "productividad": 4,
+      "formacion": 5,
+      "sostenibilidad": 4
+    },
+    "puntajesPonderados": {
+      "pertinencia": 1.25,
+      "infraestructura": 0.40,
+      "talento": 0.50,
+      "productividad": 0.80,
+      "formacion": 1.00,
+      "sostenibilidad": 0.60,
+      "total": 4.55
+    },
+    "prioridad": "Alta",
+    "accionConsolidacion": "Fusión natural con la línea histórica de Energías Renovables y Aprovechamiento Térmico.",
+    "infraestructuraCritica": {
+      "item1": "Analizador de gases de combustión de alta precisión (testo / Horiba)",
+      "item2": "Software Ansys Fluent / Chemkin con licencias multi-core de cálculo"
+    },
+    "comentariosAdicionales": "Línea alineada con las directrices de transición energética justa regional."
+  },
+  {
+    "id": "resp-002",
+    "fecha": "2026-09-29T10:20:00.000Z",
+    "docente": "MSc. Álvaro Javier Gómez",
+    "subarea": "Materiales y procesos de manufactura",
+    "subareaOtro": "",
+    "nombreLinea": "Desarrollo y Caracterización de Materiales Compuestos con Fibras Naturales Regionales",
+    "definicion": "Síntesis de materiales poliméricos reforzados con fibras de plátano, fique y palma de aceite para aplicaciones estructurales livianas y sostenibles en el sector agroindustrial y automotriz.",
+    "palabrasDefinicion": 26,
+    "criterios": {
+      "pertinencia": 4,
+      "infraestructura": 3,
+      "talento": 4,
+      "productividad": 4,
+      "formacion": 4,
+      "sostenibilidad": 3
+    },
+    "puntajesPonderados": {
+      "pertinencia": 1.00,
+      "infraestructura": 0.30,
+      "talento": 0.40,
+      "productividad": 0.80,
+      "formacion": 0.80,
+      "sostenibilidad": 0.45,
+      "total": 3.75
+    },
+    "prioridad": "Media",
+    "accionConsolidacion": "Integrar con el laboratorio de metalurgia y caracterización mecánica de sólidos.",
+    "infraestructuraCritica": {
+      "item1": "Máquina universal de ensayos mecánicos calibrada con celda climática",
+      "item2": "Microscopio Electrónico de Barrido (SEM) de mesa para análisis de fractura"
+    },
+    "comentariosAdicionales": "Se requiere fortalecer convenios con asociaciones de productores de plátano del departamento."
+  },
+  {
+    "id": "resp-003",
+    "fecha": "2026-09-29T10:25:00.000Z",
+    "docente": "Dr. Fernando Manuel Hoyos",
+    "subarea": "Diseño, automatización y control",
+    "subareaOtro": "",
+    "nombreLinea": "Automatización, Robótica y Visión Artificial para la Agroindustria 4.0",
+    "definicion": "Diseño de sistemas mecatrónicos autónomos, sensores embebidos y plataformas robóticas para optimizar la siembra, clasificación y procesamiento postcosecha de productos agrícolas del Valle del Sinú.",
+    "palabrasDefinicion": 25,
+    "criterios": {
+      "pertinencia": 5,
+      "infraestructura": 4,
+      "talento": 5,
+      "productividad": 4,
+      "formacion": 5,
+      "sostenibilidad": 4
+    },
+    "puntajesPonderados": {
+      "pertinencia": 1.25,
+      "infraestructura": 0.40,
+      "talento": 0.50,
+      "productividad": 0.80,
+      "formacion": 1.00,
+      "sostenibilidad": 0.60,
+      "total": 4.55
+    },
+    "prioridad": "Alta",
+    "accionConsolidacion": "Articular con grupos afines de Ingeniería de Sistemas y Electrónica mediante proyectos interdisciplinarios.",
+    "infraestructuraCritica": {
+      "item1": "Estación de prototipado rápido e impresión 3D industrial de resina y metal",
+      "item2": "Sensores LiDAR y cámaras multiespectrales industriales para guiado autónomo"
+    },
+    "comentariosAdicionales": "Cuenta con alto interés por parte del sector agroindustrial local (Agrosavia, gremios)."
+  },
+  {
+    "id": "resp-004",
+    "fecha": "2026-09-29T10:30:00.000Z",
+    "docente": "Dra. Luz Helena Mercado",
+    "subarea": "Energía y eficiencia energética",
+    "subareaOtro": "",
+    "nombreLinea": "Sistemas de Refrigeración Solar y Climatización Pasiva para Clima Cálido Húmedo",
+    "definicion": "Modelamiento experimental y computacional de ciclos de refrigeración por absorción solar para la conservación de la cadena de frío en alimentos y confort térmico en el trópico.",
+    "palabrasDefinicion": 26,
+    "criterios": {
+      "pertinencia": 5,
+      "infraestructura": 3,
+      "talento": 4,
+      "productividad": 4,
+      "formacion": 4,
+      "sostenibilidad": 4
+    },
+    "puntajesPonderados": {
+      "pertinencia": 1.25,
+      "infraestructura": 0.30,
+      "talento": 0.40,
+      "productividad": 0.80,
+      "formacion": 0.80,
+      "sostenibilidad": 0.60,
+      "total": 4.15
+    },
+    "prioridad": "Alta",
+    "accionConsolidacion": "Articularse con la subárea de Energía como rama especializada en refrigeración sostenible.",
+    "infraestructuraCritica": {
+      "item1": "Cámara climática controlada para pruebas de eficiencia energética",
+      "item2": "Piranómetros calibrados y sistema de adquisición de datos multipunto"
+    },
+    "comentariosAdicionales": "Esencial para solventar la problemática de pérdidas poscosecha de pescadores y agricultores del río Sinú."
+  },
+  {
+    "id": "resp-005",
+    "fecha": "2026-09-29T10:35:00.000Z",
+    "docente": "Ing. Jorge Mario Peña",
+    "subarea": "Materiales y procesos de manufactura",
+    "subareaOtro": "",
+    "nombreLinea": "Tribología, Integridad Estructural y Mantenimiento Predictivo",
+    "definicion": "Evaluación de desgaste, lubricación y análisis dinámico de vibraciones mecánicas para extender la vida útil y confiabilidad de maquinaria agroindustrial y minera regional.",
+    "palabrasDefinicion": 24,
+    "criterios": {
+      "pertinencia": 4,
+      "infraestructura": 4,
+      "talento": 4,
+      "productividad": 3,
+      "formacion": 4,
+      "sostenibilidad": 3
+    },
+    "puntajesPonderados": {
+      "pertinencia": 1.00,
+      "infraestructura": 0.40,
+      "talento": 0.40,
+      "productividad": 0.60,
+      "formacion": 0.80,
+      "sostenibilidad": 0.45,
+      "total": 3.65
+    },
+    "prioridad": "Media",
+    "accionConsolidacion": "Unificar con la línea de procesos de conformado y manufactura avanzada.",
+    "infraestructuraCritica": {
+      "item1": "Tribómetro rotatorio pin-on-disk con sensor de coeficiente de fricción",
+      "item2": "Analizador de vibraciones triaxial y software de diagnóstico predictivo"
+    },
+    "comentariosAdicionales": "Posibilidad inmediata de consultorías externas y ensayos para industrias locales."
+  }
+]
